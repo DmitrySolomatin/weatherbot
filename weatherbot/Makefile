@@ -18,4 +18,4 @@ build:
  
 .PHONY: docker-login
 docker-login:
-	aws ecr get-login-password --region $(REPOSITORY_REGION) | docker login --username AW
+	aws ecr get-login-password --region $(REPOSITORY_REGION) | docker login --username AWS --password-stdin $(REGISTRY_ID).dkr.ecr.$(REPOSITORY_REGION).amazonaws.com
