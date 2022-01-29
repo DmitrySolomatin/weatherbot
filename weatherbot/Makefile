@@ -12,6 +12,7 @@ build:
 	#docker tag ${APP_NAME}-${ENV_NAME}:$(TAG) $(REGISTRY_ID).dkr.ecr.$(REPOSITORY_REGION).amazonaws.com/${APP_NAME}-${ENV_NAME}:$(TAG)
 	docker push $(REGISTRY_ID).dkr.ecr.$(REPOSITORY_REGION).amazonaws.com/${APP_NAME}-${ENV_NAME}:$(TAG)
  
+  #examples!
   #docker build -t weatherbot-dev .
   #docker tag weatherbot-dev:latest 978552764709.dkr.ecr.eu-north-1.amazonaws.com/weatherbot-dev:latest
   #docker push 978552764709.dkr.ecr.eu-north-1.amazonaws.com/weatherbot-dev:latest
