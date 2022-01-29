@@ -1,2 +1,3 @@
 # weatherbot
-Final code for weatherbot demo with infrastructure.
+
+The final code for the demo version of the weather telegram bot with related infrastructure.
