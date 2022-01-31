@@ -37,22 +37,9 @@ phases:
       - terragrunt plan --terragrunt-working-dir providers/dev/ecs-cluster/ -var="image_tag=${TAG}" -no-color -input=false -out plan.out
       - terragrunt apply --terragrunt-working-dir providers/dev/ecs-cluster/ -auto-approve -no-color -input=false plan.out
 
-  post_build:
+    post_build:
     commands:
-      - | 
-        if [ $CODEBUILD_BUILD_SUCCEEDING != 0 ]; then
-          NEWTAG=''
-          while [ "${NEWTAG}" != "${TAG}" ]; 
-          do 
-            NEW_ARN=$(aws ecs list-services --cluster ${APP_NAME}-${ENV}-cluster | jq -r .serviceArns[])
-            NEW_TASKDEF=$(aws ecs describe-services --cluster ${APP_NAME}-${ENV}-cluster --service ${NEW_ARN} | jq -r .services[].taskDefinition)
-            NEWTAG=$(aws ecs describe-task-definition --task-definition ${NEW_TASKDEF} | jq -r .taskDefinition.containerDefinitions[].image | tr ':' ' ' | awk '{print $2}')
-            echo "Waiting until new image started... Tag: ${TAG} New tag: ${NEWTAG}"
-            if [ "${NEWTAG}" != ${TAG} ]; then
-              sleep 10
-            fi
-          done
-        else
-          echo "Build failed"
-        fi
-      - echo "Cluster has been deployed"
+      - cd "${CODEBUILD_SRC_DIR}/providers/dev/ecs-cluster"
+      - terragrunt plan -var="image_tag=${TAG}" 
+      - terragrunt apply -var="image_tag=${TAG}" -auto-approve
+      - echo "Cluster has been deployed!"
