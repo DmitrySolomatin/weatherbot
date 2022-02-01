@@ -16,7 +16,7 @@ RUN env | grep "APP_TOKEN"
 RUN env | grep "APP_WEATHER_KEY"
 
 #workdir
-WORKDIR /weatherbot-devp
+WORKDIR /weatherbot-dev
 
 #upgrade pip
 RUN pip install --upgrade pip
