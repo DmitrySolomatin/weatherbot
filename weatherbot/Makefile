@@ -2,7 +2,7 @@ TAG ?= latest
 REGISTRY_ID ?= 978552764709
 REPOSITORY_REGION ?= eu-north-1
 APP_NAME ?= weatherbot
-ENV_NAME ?= dev
+ENV_NAME ?= prod
 REPO_NAME = $(REGISTRY_ID).dkr.ecr.$(REPOSITORY_REGION).amazonaws.com/${APP_NAME}-${ENV_NAME}
 
 .PHONY: build
