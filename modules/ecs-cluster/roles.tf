@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "ecs_task_execution_role" {
 
 # ECS task execution role
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name               = "${var.app_name}-${var.ecs_task_execution_role_name}"
+  name               = "${var.app_name}-${var.environment}-${var.ecs_task_execution_role_name}"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_role.json
 }
 
@@ -112,7 +112,7 @@ EOF
 }
 
 resource "aws_iam_role" "ecs_task_role" {
-  name               = "${var.app_name}-${var.ecs_task_role_name}"
+  name               = "${var.app_name}-${var.environment}-${var.ecs_task_role_name}"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -131,7 +131,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "ecs_task_role" {
-  name = "${var.app_name}-${var.ecs_task_role_name}"
+  name = "${var.app_name}-${var.environment}-${var.ecs_task_role_name}"
   role = aws_iam_role.ecs_task_role.id
   policy = <<EOF
 {

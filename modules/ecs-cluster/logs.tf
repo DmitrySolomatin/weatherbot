@@ -2,7 +2,7 @@
 
 # Set up CloudWatch group and log stream and retain logs for 30 days
 resource "aws_cloudwatch_log_group" "cb_log_group" {
-  name              = "/ecs/cb-weatherbot"
+  name              = "/ecs/cb-weatherbot-${var.environment}"
   retention_in_days = 30
 
   tags = {

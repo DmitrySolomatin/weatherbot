@@ -6,7 +6,7 @@ locals {
   aws_account = "978552764709"
   aws_region = "eu-north-1"
   image_tag = "latest"
-  repo_url = "https://github.com/DmitrySolomatin/weatherbot"
+  repo_url = "https://github.com/DmitrySolomatin/weatherbot.git"
   branch_pattern = "^refs/heads/main$"
   git_trigger_event = "PUSH"
   app_count = 1
@@ -21,7 +21,7 @@ inputs = {
   aws_region = local.aws_region
   image_tag = local.image_tag
   repo_url = local.repo_url
-  github_oauth_token = "GITHUB_TOKEN"
+  github_personal_access_token = "GITHUB_TOKEN"
   branch_pattern = local.branch_pattern
   git_trigger_event = local.git_trigger_event
   app_count = local.app_count

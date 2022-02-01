@@ -24,13 +24,13 @@ resource "null_resource" "import_source_credentials" {
 
   
   triggers = {
-    github_oauth_token = var.github_oauth_token
+    github_personal_access_token = var.github_personal_access_token
   }
 
   provisioner "local-exec" {
     command = <<EOF
       aws --region ${data.aws_region.current.name} codebuild import-source-credentials \
-                                                             --token ${var.github_oauth_token} \
+                                                             --token ${var.github_personal_access_token} \
                                                              --server-type GITHUB \
                                                              --auth-type PERSONAL_ACCESS_TOKEN
 EOF
@@ -97,9 +97,9 @@ resource "aws_codebuild_project" "project" {
   }
 }
 
-resource "aws_codebuild_webhook" "develop_webhook" {
+resource "aws_codebuild_webhook" "main_webhook" {
   project_name = aws_codebuild_project.project.name
-
+  #secret = var.secret
   # https://docs.aws.amazon.com/codebuild/latest/APIReference/API_WebhookFilter.html
   filter_group {
     filter {
@@ -113,3 +113,9 @@ resource "aws_codebuild_webhook" "develop_webhook" {
     }
   }
 }
+#resource "aws_ssm_parameter" "secret" {
+  #name        = "github_personal_access_token"
+  #description = "github_personal_access_token_to_aws_codebuild"
+  #type        = "SecureString"
+  #value       = "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"
+#}
