@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#sudo -u postgres psql postgres;
+sudo -u postgres psql postgres;
 
 #create database
 sudo -u postgres bash -c "psql -c\"CREATE DATABASE weatherbot-dev;\""
