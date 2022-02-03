@@ -8,7 +8,7 @@ from sqlalchemy import create_engine, exists
 from sqlalchemy.orm import sessionmaker
 from telegram import KeyboardButton, ReplyKeyboardMarkup
 from dotenv import load_dotenv
-from models_2 import UserCoord
+from models import UserCoord
 
 load_dotenv()
 # logging

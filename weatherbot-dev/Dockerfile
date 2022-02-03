@@ -19,7 +19,7 @@ RUN env | grep "APP_WEATHER_KEY"
 RUN env | grep "APP_DATABASE_URL"
 #workdir
 WORKDIR /weatherbot-dev
-#RUN ./weatherbot-dev/createuser.sh
+
 #upgrade pip
 RUN pip install --upgrade pip
 #install python modules needed by the app
@@ -28,7 +28,7 @@ COPY requirements.txt requirements.txt
 #RUN venv/bin/pip install --no-cache-dir -r ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 #copy files required for the app run
-COPY models.py weather.py weather_json.py ./weatherbot-dev/
+COPY models.py weather.py weather_json.py ./
 
 #the port number the container should expose
 EXPOSE 80

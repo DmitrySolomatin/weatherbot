@@ -61,7 +61,7 @@ def get_weather_5(loc):
             feels_like = [math.ceil(i['main']['feels_like']) for i in datalist]
             main = [i['weather'] for i in response['list']]
             spec = [item['description'] for sublist in main for item in sublist]
-            count += i
+            count += 1
             day.append((datetime.today() + timedelta(days=count)).strftime('%a (%m-%d)'))
             msg.append(day[i] + ": " + str(temp[i]) + "°C, feels like " + str(feels_like[i]) + "°C, " + str(spec[i]))
         msgg = '{},{}. 5 Day Weather Forecast: '.format(cityn, country)
@@ -89,7 +89,7 @@ def geo_weather_5(lon, lat):
         feels_like = [math.ceil(i['main']['feels_like']) for i in datalist]
         main = [i['weather'] for i in response['list']]
         spec = [item['description'] for sublist in main for item in sublist]
-        count += i
+        count += 1
         day.append((datetime.today() + timedelta(days=count)).strftime('%a (%m-%d)'))
         msg.append(day[i] + ": " + str(temp[i]) + "°C, feels like " + str(feels_like[i]) + "°C, " + str(spec[i]))
     msgg = '{},{}. 5 Day Weather Forecast: '.format(city, country)
