@@ -12,10 +12,10 @@ env:
 phases:
   pre_build:
     commands:
-      - #curl -sSL "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -o terraform.zip
-      - #unzip terraform.zip -d /usr/local/bin && chmod +x /usr/local/bin/terraform
-      - #curl -sSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64 -o terragrunt
-      - #mv terragrunt /usr/local/bin/ && chmod +x /usr/local/bin/terragrunt
+      - curl -sSL "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -o terraform.zip
+      - unzip terraform.zip -d /usr/local/bin && chmod +x /usr/local/bin/terraform
+      - curl -sSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64 -o terragrunt
+      - mv terragrunt /usr/local/bin/ && chmod +x /usr/local/bin/terragrunt
       - export REGISTRY_ID=`aws sts get-caller-identity --output text | awk '{print $1}'`
       - export REPO_NAME="${REGISTRY_ID}.dkr.ecr.${REPOSITORY_REGION}.amazonaws.com/${APP_NAME}-${ENV}"
       - pip install jq
@@ -41,5 +41,5 @@ phases:
     commands:
       - cd "${CODEBUILD_SRC_DIR}/providers/dev/ecs-cluster"
       - #terragrunt plan -var="image_tag=${TAG}" 
-      - terragrunt apply -var="image_tag=${TAG}" -auto-approve
+      - terragrunt apply -var="${TAG}" -auto-approve
       - echo "Cluster has been deployed!"
