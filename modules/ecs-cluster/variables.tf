@@ -38,9 +38,9 @@ variable "app_count" {
   default     = 1
 }
 
-variable "health_check_path" {
-  default = "/"
-}
+#variable "health_check_path" {
+  #default = "/"
+#}
 
 variable "fargate_cpu" {
   description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
