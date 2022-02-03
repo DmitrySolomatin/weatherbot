@@ -1,4 +1,4 @@
-# application loadbalancer.tf
+#application loadbalancer.tf
 
 resource "aws_alb" "main" {
   name            = "${var.app_name}-${var.environment}-lb"
