@@ -7,7 +7,7 @@ locals {
   aws_region = "eu-north-1"
   image_tag = "latest"
   repo_url = "https://github.com/DmitrySolomatin/weatherbot.git"
-  branch_pattern = "^refs/heads/main$"
+  branch_pattern = "^refs/heads/prod$"
   git_trigger_event = "PUSH"
   app_count = 1
 }
@@ -49,7 +49,7 @@ generate "tfenv" {
   disable_signature = true
 
   contents = <<EOF
-1.1.4
+1.1.5
 EOF
 }
 
