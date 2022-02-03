@@ -18,9 +18,9 @@ resource "aws_alb_target_group" "weatherbot-dev" {
     interval            = "30"
     protocol            = "HTTP"
     matcher             = "200"
-    timeout             = "1"
+    timeout             = "120"
     path                = var.health_check_path
-    unhealthy_threshold = "1"
+    unhealthy_threshold = "10"
   }
 }
 
