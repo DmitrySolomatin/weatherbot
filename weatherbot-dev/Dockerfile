@@ -31,4 +31,3 @@ COPY weather.py weather_json.py ./
 EXPOSE 80
 #run the application
 CMD ["python", "weather.py"]
-
