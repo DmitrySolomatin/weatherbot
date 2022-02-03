@@ -18,7 +18,7 @@ data "template_file" "cb_weatherbot" {
   }
 }
 
-resource "aws_ecs_task_definition" "weatherbot" {
+resource "aws_ecs_task_definition" "weatherbot-prod" {
   family                   = "${var.app_name}-${var.environment}-task"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "weatherbot" {
 resource "aws_ecs_service" "main" {
   name            = "${var.app_name}-${var.environment}-service"
   cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.weatherbot.arn
+  task_definition = aws_ecs_task_definition.weatherbot-prod.arn
   desired_count   = var.app_count
   launch_type     = "FARGATE"
   #launch_type     = "EC2"
@@ -47,7 +47,7 @@ resource "aws_ecs_service" "main" {
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.weatherbot.id
+    target_group_arn = aws_alb_target_group.weatherbot-prod.id
     container_name   = "${var.app_name}"
     container_port   = var.app_port
   }
