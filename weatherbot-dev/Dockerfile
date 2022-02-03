@@ -19,7 +19,7 @@ RUN env | grep "APP_WEATHER_KEY"
 RUN env | grep "APP_DATABASE_URL"
 #workdir
 WORKDIR /weatherbot-dev
-RUN ./weatherbot-dev/createuser.sh
+#RUN ./weatherbot-dev/createuser.sh
 #upgrade pip
 RUN pip install --upgrade pip
 #install python modules needed by the app
