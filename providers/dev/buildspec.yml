@@ -41,5 +41,5 @@ phases:
     commands:
       - cd "${CODEBUILD_SRC_DIR}/providers/dev/ecs-cluster"
       - #terragrunt plan -var="image_tag=${TAG}" 
-      - terragrunt apply -var="${TAG}" -auto-approve
+      - terragrunt apply -var="image_tag=${TAG}" -auto-approve
       - echo "Cluster has been deployed!"
