@@ -1,4 +1,4 @@
-TAG ?=
+TAG ?= latest
 REGISTRY_ID ?= 978552764709
 REPOSITORY_REGION ?= eu-north-1
 APP_NAME ?= weatherbot
@@ -16,6 +16,8 @@ build:
   #docker tag weatherbot-dev:latest 978552764709.dkr.ecr.eu-north-1.amazonaws.com/weatherbot-dev:latest
   #docker push 978552764709.dkr.ecr.eu-north-1.amazonaws.com/weatherbot-dev:latest
   
+  #ssm parameter storage
+
 .PHONY: docker-login
 docker-login:
 	aws ecr get-login-password --region $(REPOSITORY_REGION) | docker login --username AWS --password-stdin $(REGISTRY_ID).dkr.ecr.$(REPOSITORY_REGION).amazonaws.com

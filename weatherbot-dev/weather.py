@@ -5,7 +5,6 @@ from weather_json import get_weather, geo_weather, get_weather_5
 import os
 import telegram
 import logging
-#from telegram import Update
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,7 +21,7 @@ def start_handler(update:Updater, context:CallbackContext):
     update.message.reply_text("Type /help for instructions.")
 
 
-def help_handler(update:Updater, context: CallbackContext):
+def help_handler(update, context: CallbackContext):
     update.message.reply_text(
         "Write /weather city.\nCity is where you want to know daily weather forecast."
         "\nFor example, \n\t\t\t/weather Berlin\n\t\t\t/weather Kiev. \n"
@@ -33,23 +32,14 @@ def help_handler(update:Updater, context: CallbackContext):
 def geo_text_handler(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Send your location.")
 
-def geo_handler(update, context):
+def geo_handler(update, context): #command geo
     lat = update.message.location.latitude
     lon = update.message.location.longitude
     result = geo_weather(lon, lat)
     context.bot.send_message(chat_id=update.effective_chat.id, text=result)
 
 
-def geo_text_handler_5(update, context):
-    context.bot.send_message(chat_id=update.message.chat_id, text="Send your location.")
-
-def geo_handler_5(update, context):
-    lat = update.message.location.latitude
-    lon = update.message.location.longitude
-    result_5 = geo_weather_5(lon, lat)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=result_5)
-
-def temperature_handler(update, context):
+def temperature_handler(update, context): #command weather
     if context.args:
         loc = "".join(context.args)
         result = get_weather(loc)
@@ -58,7 +48,7 @@ def temperature_handler(update, context):
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text="/weather city\nWrite city name as a argument.")
 
-def temperature_handler_5(update, context):
+def temperature_handler_5(update, context): #command weather5
     if context.args:
         loc = "".join(context.args)
         result_5 = get_weather_5(loc)
