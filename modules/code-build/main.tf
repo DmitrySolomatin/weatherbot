@@ -113,4 +113,9 @@ resource "aws_codebuild_webhook" "main_webhook" {
     }
   }
 }
-
+#resource "aws_ssm_parameter" "secret" {
+  #name        = "github_personal_access_token"
+  #description = "github_personal_access_token_to_aws_codebuild"
+  #type        = "SecureString"
+  #value       = "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"
+#}
