@@ -33,4 +33,4 @@ COPY models.py weather.py weather_json.py ./
 #the port number the container should expose
 EXPOSE 80
 #run the application
-CMD ["python", "weather.py"]
+CMD ["python", "weather.py", models.py]
