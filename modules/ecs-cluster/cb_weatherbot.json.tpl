@@ -8,7 +8,7 @@
     "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/cb-weatherbot",
+          "awslogs-group": "/ecs/cb-weatherbot-prod",
           "awslogs-region": "${aws_region}",
           "awslogs-stream-prefix": "ecs"
         }
