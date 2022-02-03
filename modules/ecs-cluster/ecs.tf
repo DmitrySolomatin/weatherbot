@@ -46,12 +46,5 @@ resource "aws_ecs_service" "main" {
     assign_public_ip = true
   }
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.weatherbot-prod.id
-    container_name   = "${var.app_name}"
-    container_port   = var.app_port
-  }
-
-  depends_on = [aws_alb_listener.listener, aws_iam_role_policy.ecs_task_execution_role]
+  depends_on = [aws_iam_role_policy.ecs_task_execution_role]
 }
-
