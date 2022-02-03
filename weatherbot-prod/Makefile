@@ -8,7 +8,7 @@ REPO_NAME = $(REGISTRY_ID).dkr.ecr.$(REPOSITORY_REGION).amazonaws.com/${APP_NAME
 .PHONY: build
 build:
 	$(MAKE) docker-login
-	docker build --build-arg token="5083471084:AAFMTKcdce-bOSDbq3tc3i73WyNFMRMkpP0" --build-arg api_key="de1f2fc1fa7776253c482950f5de0956" -t $(REPO_NAME):$(TAG) .
+	docker build --build-arg token="5083471084:AAFMTKcdce-bOSDbq3tc3i73WyNFMRMkpP0" --build-arg api_key="de1f2fc1fa7776253c482950f5de0956" --build-arg db_url="postgresql://weather_admin:weather?@localhost:5432/weather_bot" -t $(REPO_NAME):$(TAG) .
 	#docker tag ${APP_NAME}-${ENV_NAME}:$(TAG) $(REGISTRY_ID).dkr.ecr.$(REPOSITORY_REGION).amazonaws.com/${APP_NAME}-${ENV_NAME}:$(TAG)
 	docker push $(REGISTRY_ID).dkr.ecr.$(REPOSITORY_REGION).amazonaws.com/${APP_NAME}-${ENV_NAME}:$(TAG)
  

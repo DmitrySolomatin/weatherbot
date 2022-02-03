@@ -6,7 +6,7 @@ env:
     REPOSITORY_REGION: "eu-north-1"
     ENV: "prod"
     APP_NAME: "weatherbot"
-    TERRAFORM_VERSION: "1.1.4"
+    TERRAFORM_VERSION: "1.1.5"
     TERRAGRUNT_VERSION: "0.36.0"
     
 phases:
@@ -28,7 +28,7 @@ phases:
   build:
     commands:
       - echo "Build and push docker images"
-      - cd "${CODEBUILD_SRC_DIR}/weatherbot-prod"
+      - cd "${CODEBUILD_SRC_DIR}/weatherbot"
       - export TAG="${CODEBUILD_RESOLVED_SOURCE_VERSION}-${ENV}"
       - echo "Building version ${TAG}"
       - make build
