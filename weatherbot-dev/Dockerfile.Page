@@ -1,12 +1,9 @@
-FROM alpine:latest
+FROM ubuntu:16.04
 
-RUN apk --no-cache update
-RUN apk add --no-cache apache2
+RUN apt-get -y update
+RUN apt-get -y install apache2
 
-WORKDIR /var/www/localhost/htdocs
-COPY  /page/index.html  /var/www/localhost/htdocs 
-RUN echo 'Hello Amazing DevOps World!' > /var/www/localhost/htdocs
+RUN echo 'Hello Amazing DevOps World!' > /var/www/html/index.html
 
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
-
+CMD ["/usr/sbin/apache2ctl", "-D","FOREGROUND"]
 EXPOSE 80
