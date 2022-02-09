@@ -5,7 +5,7 @@ locals {
   aws_profile = "default"
   aws_account = "978552764709"
   aws_region = "eu-north-1"
-  image_tag = "1.0"
+  image_tag = "latest"
   repo_url = "https://github.com/DmitrySolomatin/weatherbot.git"
   branch_pattern = "^refs/heads/dev$"
   git_trigger_event = "PUSH"
