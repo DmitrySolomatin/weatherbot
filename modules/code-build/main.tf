@@ -77,6 +77,7 @@ resource "aws_codebuild_project" "project" {
   #   type = "LOCAL"
   #   modes = ["LOCAL_DOCKER_LAYER_CACHE"]
   # }
+
   # https://docs.aws.amazon.com/codebuild/latest/userguide/vpc-support.html#enabling-vpc-access-in-projects
   # Access resources within our VPC
   // dynamic "vpc_config" {

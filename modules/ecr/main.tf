@@ -5,5 +5,5 @@ resource "aws_ecr_repository" "ecr_repository" {
 
 # Repository for web-page
 resource "aws_ecr_repository" "ecr_repository_page" {
-  name = "${var.app_name}-${var.environment}-page"
+  name = local.repository_page
 }

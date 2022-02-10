@@ -60,12 +60,18 @@ variable "ecr_repository_url" {
   type = string
 }
 
+variable "ecr_repository_page" {
+  type = string
+  default = "page"
+}
+
 variable "app_name" {
   type = string
 }
 
 variable "image_tag" {
   type = string
+  default = "latest"
 }
 
 variable "taskdef_template" {
@@ -74,4 +80,14 @@ variable "taskdef_template" {
 
 locals {
   app_image = format("%s:%s", var.ecr_repository_url, var.image_tag)
+}
+
+data "aws_ami" "linux2_ecs" {
+  owners = ["amazon"]
+  most_recent = true
+
+  filter {
+    name = "name"
+    values = ["amzn2-ami-ecs-hvm-*-x86_64-ebs"]
+  }
 }
