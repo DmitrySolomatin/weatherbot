@@ -1,8 +1,7 @@
-# Main cluster
+# ecs.tf
+
 resource "aws_ecs_cluster" "main" {
-  depends_on = [aws_autoscaling_group.autoscale]
-  name = "Cluster-${var.environment}-${var.app_name}"
-  capacity_providers = [aws_ecs_capacity_provider.capacity_provider.name]
+  name = "${var.app_name}-${var.environment}-cluster"
 }
 
 data "template_file" "cb_weatherbot" {
@@ -19,53 +18,28 @@ data "template_file" "cb_weatherbot" {
   }
 }
 
-# Task definition for web page
-resource "aws_ecs_task_definition" "task_def_page" {
-  family = "task-page-${var.app_name}-${var.environment}"
+resource "aws_ecs_task_definition" "weatherbot-dev" {
+  family                   = "${var.app_name}-${var.environment}-task"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"] 
+  #network_mode             = "awsvpc"
+  #requires_compatibilities = ["EC2"]
+  cpu                      = var.fargate_cpu 
+  memory                   = var.fargate_memory 
   container_definitions    = data.template_file.cb_weatherbot.rendered
 }
 
-# Task definition for weatherbot 
-resource "aws_ecs_task_definition" "task_def_weatherbot" {
-  family = "task-bot-${var.app_name}-${var.environment}"
-  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn = aws_iam_role.ecs_task_role.arn
-  network_mode = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu = var.fargate_cpu
-  memory = var.fargate_memory
-  container_definitions    = data.template_file.cb_weatherbot.rendered
-}
+resource "aws_ecs_service" "main" {
+  name            = "${var.app_name}-${var.environment}-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.weatherbot-dev.arn
+  desired_count   = var.app_count
+  launch_type     = "FARGATE"
+  #launch_type     = "EC2"
+  #instance_type = t3.nano
 
-# Service for web-page
-resource "aws_ecs_service" "service_page" {
-  capacity_provider_strategy {
-  capacity_provider = aws_ecs_capacity_provider.capacity_provider.name
-  weight = 1
-  base = 0
-}
-  name = "Service-Page-${var.app_name}-${var.environment}"
-  cluster = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.task_def_page.arn
-  desired_count = 2
-  deployment_minimum_healthy_percent = "90"
-  
-  load_balancer {
-    target_group_arn = aws_alb_target_group.page.arn
-    container_name = "page-${var.app_name}-${var.environment}"
-    container_port = var.app_port
-  }
-}
-
-
-# Service for weatherbot
-resource "aws_ecs_service" "service_weatherbot" {
-  name = "${var.app_name}-${var.environment}-bot"
-  cluster = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.task_def_weatherbot.arn
-  desired_count = 1
-  launch_type = "FARGATE"
-  
   network_configuration {
     security_groups  = [aws_security_group.ecs_tasks.id]
     subnets          = aws_subnet.private_subnet.*.id
@@ -73,27 +47,11 @@ resource "aws_ecs_service" "service_weatherbot" {
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.weatherbot.arn
-    container_name = "weatherbot-${var.app_name}-${var.environment}"
-    container_port = var.app_port
+    target_group_arn = aws_alb_target_group.weatherbot-dev.id
+    container_name   = "${var.app_name}"
+    container_port   = var.app_port
   }
+
+  depends_on = [aws_alb_listener.listener, aws_iam_role_policy.ecs_task_execution_role]
 }
 
-
-# Capacity provider for web-page
-resource "aws_ecs_capacity_provider" "capacity_provider" {
-  name = "CP-${var.environment}-${var.app_name}"
-  
-  auto_scaling_group_provider {
-    auto_scaling_group_arn         = aws_autoscaling_group.autoscale.arn
-    managed_termination_protection = "DISABLED"
-
-    managed_scaling {
-      maximum_scaling_step_size = var.counter_for_az*2
-      minimum_scaling_step_size = 2
-      status                    = "ENABLED"
-      target_capacity           = 100
-      
-    }
-  }
-}

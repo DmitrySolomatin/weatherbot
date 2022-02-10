@@ -1,30 +1,90 @@
-resource "aws_launch_configuration" "ecs_ec2_launch_config" {
-    image_id             = data.aws_ami.latest_amazon_linux.id
-    #iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
-    security_groups      = [aws_security_group.ecs_tasks.id]
-    user_data =templatefile("user_data.tpl", {env = "${var.environment}", app = "${var.app_name}"})
-    instance_type        = "t2.micro"
-    
-    lifecycle {
-    create_before_destroy = true
-  }
+# auto_scaling_group.tf
+
+resource "aws_appautoscaling_target" "target" {
+  service_namespace  = "ecs"
+  resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.main.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  min_capacity       = 1
+  max_capacity       = 1
 }
 
-resource "aws_autoscaling_group" "autoscale" {
-    name                      = "${var.app_name}-${var.environment}-auto-asg"
-    depends_on                = [aws_launch_configuration.ecs_ec2_launch_config]
-    vpc_zone_identifier       = aws_subnet.private_subnet.*.id
-    launch_configuration      = aws_launch_configuration.ecs_ec2_launch_config.name
-    target_group_arns         = [aws_alb_target_group.page.arn]
-    min_size                  = var.counter_for_az
-    max_size                  = var.counter_for_az*2
-    
-    health_check_grace_period = 20
-    health_check_type         = "EC2"
+# Automatically scale capacity up by one
+resource "aws_appautoscaling_policy" "up" {
+  name               = "${var.app_name}-${var.environment}_scale_up"
+  service_namespace  = "ecs"
+  resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.main.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
 
-     tag {
-    key                 = "Name"
-    value               = "${var.app_name}-${var.environment}-ec2-ecs"
-    propagate_at_launch = true
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown                = 60
+    metric_aggregation_type = "Maximum"
+
+    step_adjustment {
+      metric_interval_lower_bound = 0
+      scaling_adjustment          = 1
+    }
   }
+
+  depends_on = [aws_appautoscaling_target.target]
 }
+
+# Automatically scale capacity down by one
+resource "aws_appautoscaling_policy" "down" {
+  name               = "${var.app_name}-${var.environment}_scale_down"
+  service_namespace  = "ecs"
+  resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.main.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown                = 60
+    metric_aggregation_type = "Maximum"
+
+    step_adjustment {
+      metric_interval_upper_bound = 0
+      scaling_adjustment          = -1
+    }
+  }
+
+  depends_on = [aws_appautoscaling_target.target]
+}
+
+# CloudWatch alarm that triggers the autoscaling up policy
+resource "aws_cloudwatch_metric_alarm" "service_cpu_high" {
+  alarm_name          = "${var.app_name}-${var.environment}_cpu_utilization_high"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "85"
+
+  dimensions = {
+    ClusterName = aws_ecs_cluster.main.name
+    ServiceName = aws_ecs_service.main.name
+  }
+
+  alarm_actions = [aws_appautoscaling_policy.up.arn]
+}
+
+# CloudWatch alarm that triggers the autoscaling down policy
+resource "aws_cloudwatch_metric_alarm" "service_cpu_low" {
+  alarm_name          = "${var.app_name}-${var.environment}_cpu_utilization_low"
+  comparison_operator = "LessThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "0"
+
+  dimensions = {
+    ClusterName = aws_ecs_cluster.main.name
+    ServiceName = aws_ecs_service.main.name
+  }
+
+  alarm_actions = [aws_appautoscaling_policy.down.arn]
+}
+

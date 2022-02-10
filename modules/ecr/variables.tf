@@ -20,7 +20,3 @@ variable "app_name" {
 locals {
   repository_name = format("%s-%s", var.app_name, var.environment)
 }
-
-locals {
-  repository_page = format("%s-%s", var.environment, "page")
-}
