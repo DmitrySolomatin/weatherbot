@@ -32,7 +32,11 @@ variable "app_port" {
   description = "Port exposed by the docker image to redirect traffic to"
   default     = 80
 }
-
+variable "api_token" {
+  description = "token for telegram"
+  type = string
+  sensitive = true
+}
 variable "app_count" {
   description = "Number of docker containers to run"
   default     = 1
