@@ -24,6 +24,12 @@
         "name": "VERSION",
         "value": "${image_tag}"
       }
+    ],
+    "secrets": [
+      {
+        "name": "API_TOKEN",
+        "valueFrom": "${aws_ssm_parameter.api_token.arn}"
+      }
     ]
   }
 ]
