@@ -1,7 +1,7 @@
 APScheduler==3.6.3
 backports.zoneinfo==0.2.1
 cachetools==4.2.2
-certifi~> 2022.12.07
+certifi~> 2023.7.22
 charset-normalizer==2.0.10
 greenlet==1.1.2
 idna==3.3
